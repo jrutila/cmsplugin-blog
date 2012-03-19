@@ -15,6 +15,8 @@ from simple_translation.admin import PlaceholderTranslationAdmin
 from simple_translation.forms import TranslationModelForm
 from simple_translation.utils import get_translation_queryset
 
+from django.shortcuts import render, redirect
+
 class EntryForm(TranslationModelForm):
         
     class Meta:
@@ -122,6 +124,7 @@ class BaseEntryAdmin(M2MPlaceholderAdmin):
         fieldsets[0] = (None, {'fields': (
             'language',
             'is_published',
+            'facebook_published',
             'pub_date',
             'author',
             'title',
@@ -134,6 +137,19 @@ class BaseEntryAdmin(M2MPlaceholderAdmin):
         if not translation_obj.author:
             translation_obj.author=request.user
         super(BaseEntryAdmin, self).save_translated_model(request, obj, translation_obj, form, change)
+
+    def response_change(self, request, obj, post_url_continue=None):
+        import django
+        from django.core.urlresolvers import reverse
+        url = 'https://www.facebook.com/dialog/oauth?client_id='
+        url = url + settings.CMS_BLOG_FACEBOOK['app_id']
+        url = url + '&redirect_uri='
+        return_uri = django.utils.http.urlquote('http://'+request.get_host()+reverse('cmsplugin_blog.views.publish_on_facebook', kwargs={ 'entry_id': obj.pk })+'?return_uri='+request.path)
+        url = url + return_uri
+        url = url + '&scope=publish_stream&response_type=token'
+        resp = super(BaseEntryAdmin, self).response_change(request, obj)
+        #return render(request, 'admin/cmsplugin_blog/login_to_facebook.html', { 'app_id': settings.CMS_BLOG_FACEBOOK['app_id'], 'return_uri': return_uri})
+        return redirect(url)
 
 if 'guardian' in settings.INSTALLED_APPS: # pragma: no cover
     from guardian.admin import GuardedModelAdmin
