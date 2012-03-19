@@ -117,3 +117,9 @@ class EntryArchiveIndexView(ArchiveIndexView):
         queryset = super(EntryArchiveIndexView, self).get_dated_queryset(**lookup)
         queryset = filter_queryset_language(self.request, queryset)
         return queryset.published()
+
+def publish_on_facebook(request, entry_id):
+    from django.shortcuts import render, render_to_response
+    from django.conf import settings
+    entry = Entry.objects.get(pk=entry_id)
+    return render(request, 'admin/cmsplugin_blog/publish_on_facebook.html', { 'entry': entry, 'site_id': settings.CMS_BLOG_FACEBOOK['site_id'] })

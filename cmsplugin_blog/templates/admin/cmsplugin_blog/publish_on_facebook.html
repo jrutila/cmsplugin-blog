@@ -1,0 +1,42 @@
+{% load placeholder_tags cmsplugin_blog_tags %}
+<html>
+<head>
+
+</head>
+<body>
+  Publishing...
+  {% with entry.placeholders|choose_placeholder:"excerpt" as excerpt %}
+  <div id='facebook_text'>
+{% render_placeholder excerpt %}
+  </div>
+  {% endwith %}
+  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/libs/jquery-1.7.1.min.js"><\/script>')</script>
+
+  <script type='text/javascript'>
+    function post_entry(data) {
+      if (data["id"] == "{{ site_id }}")
+      {
+        var accessToken = data["access_token"];
+        var path = "https://graph.facebook.com/";
+        path += data["id"];
+        path += "/feed";
+        var url = path;
+
+        $.post(url, { 'access_token': accessToken, 'message': $('#facebook_text').text().replace(/^\n/g, ''), 'link': 'http://beta.suursuo.fi{{ entry.get_absolute_url }}', 'from': '{{ site_id }}' }, function(data) {
+          alert('Published');
+        });
+      }
+    }
+    var accessToken = window.location.hash.substring(1);
+    var path = "https://graph.facebook.com/{{ site_id }}?";
+    var queryParams = [ accessToken, 'callback=post_entry', 'fields=access_token' ];
+    var query = queryParams.join('&');
+    var url = path + query;
+
+    var script = $('<script type="text/javascript" src="'+url+'"><\/script>')
+    $('body').append(script);
+  </script>
+</body>
+</html>

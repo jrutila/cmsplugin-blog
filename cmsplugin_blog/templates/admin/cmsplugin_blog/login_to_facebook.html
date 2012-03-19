@@ -1,0 +1,22 @@
+{% load i18n %}
+<html>
+<head>
+  <script type='text/javascript'>
+    var appID = "{{ app_id }}";
+    var returnUri = "{{ return_uri }}";
+    if (window.location.hash.length == 0)
+    {
+      var path = 'https://www.facebook.com/dialog/oauth?';
+      var queryParams = ['client_id=' + appID,
+        'redirect_uri=' + returnUri,
+        'response_type=token'];
+
+      var query = queryParams.join('&');
+      var url = path + query;
+      window.open(url);
+    }
+  </script>
+</head>
+  <p>{% trans "Allow popups." %}</p>
+  Login to Facebook.
+</html>
