@@ -38,7 +38,7 @@ CMSPLUGIN_BLOG_PLACEHOLDERS = getattr(settings, 'CMSPLUGIN_BLOG_PLACEHOLDERS', (
               
 class Entry(models.Model):
     is_published = models.BooleanField(_('is published'))
-    facebook_published = models.BooleanField(_('publish on Facebook'))
+    facebook_published = models.TextField(_('Facebook post'), null=True, blank=True)
     pub_date = models.DateTimeField(_('publish at'), default=datetime.datetime.now)
  
     placeholders = M2MPlaceholderField(actions=SimpleTranslationPlaceholderActions(), placeholders=CMSPLUGIN_BLOG_PLACEHOLDERS)
@@ -77,9 +77,6 @@ class Entry(models.Model):
 
         return blog_prefix or reverse('pages-root')
 
-    def publish_on_facebook(self):
-        return settings.CMS_BLOG_FACEBOOK
-        
     def _template(self):
         from simple_translation.utils import get_translated_model
         model = get_translated_model(self.__class__)

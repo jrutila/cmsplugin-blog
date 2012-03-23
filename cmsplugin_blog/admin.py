@@ -6,7 +6,7 @@ from cmsplugin_blog.widgets import AutoCompleteTagInput
 from django import forms
 from django.contrib import admin
 from django.conf import settings
-from django.forms import CharField
+from django.forms import CharField, BooleanField
 from django.http import HttpResponse
 from django.template.defaultfilters import title
 from django.utils.text import capfirst
@@ -16,12 +16,32 @@ from simple_translation.forms import TranslationModelForm
 from simple_translation.utils import get_translation_queryset
 
 from django.shortcuts import render, redirect
+from django.core.urlresolvers import reverse
 
 class EntryForm(TranslationModelForm):
-        
+    publish_on_facebook = BooleanField(required=False)
+
     class Meta:
         model = Entry
         widgets = {'tags': AutoCompleteTagInput}
+
+    def __init__(self, *args, **kwargs):
+        super(EntryForm, self).__init__(*args, **kwargs)
+        instance = kwargs.pop('instance', None)
+        if instance:
+          self.fields['publish_on_facebook'].initial = instance.facebook_published != None
+
+    def save(self, force_insert=False, force_update=False, commit=True):
+        fb_publ = None
+        if ('entry' in self.initial and self.initial['entry'] > 0):
+          fb_publ = Entry.objects.get(pk=self.initial['entry']).facebook_published
+        instance = super(TranslationModelForm, self).save(commit)
+        instance.facebook_published = fb_publ
+        instance.save()
+        instance.publish_on_facebook = False
+        if not instance.facebook_published and self.cleaned_data['publish_on_facebook']:
+          instance.publish_on_facebook = True
+        return instance
         
 class M2MPlaceholderAdmin(PlaceholderTranslationAdmin):
     
@@ -124,13 +144,14 @@ class BaseEntryAdmin(M2MPlaceholderAdmin):
         fieldsets[0] = (None, {'fields': (
             'language',
             'is_published',
-            'facebook_published',
             'pub_date',
             'author',
             'title',
             'slug',
             'tags'
         )})
+        if settings.CMS_BLOG_FACEBOOK:
+          fieldsets[0][1]['fields'] = fieldsets[0][1]['fields'] + ('publish_on_facebook',)
         return fieldsets
         
     def save_translated_model(self, request, obj, translation_obj, form, change):
@@ -140,16 +161,39 @@ class BaseEntryAdmin(M2MPlaceholderAdmin):
 
     def response_change(self, request, obj, post_url_continue=None):
         import django
-        from django.core.urlresolvers import reverse
-        url = 'https://www.facebook.com/dialog/oauth?client_id='
-        url = url + settings.CMS_BLOG_FACEBOOK['app_id']
-        url = url + '&redirect_uri='
-        return_uri = django.utils.http.urlquote('http://'+request.get_host()+reverse('cmsplugin_blog.views.publish_on_facebook', kwargs={ 'entry_id': obj.pk })+'?return_uri='+request.path)
-        url = url + return_uri
-        url = url + '&scope=publish_stream&response_type=token'
         resp = super(BaseEntryAdmin, self).response_change(request, obj)
-        #return render(request, 'admin/cmsplugin_blog/login_to_facebook.html', { 'app_id': settings.CMS_BLOG_FACEBOOK['app_id'], 'return_uri': return_uri})
-        return redirect(url)
+        if obj.publish_on_facebook:
+          url = 'https://www.facebook.com/dialog/oauth?client_id='
+          url = url + settings.CMS_BLOG_FACEBOOK['app_id']
+          url = url + '&redirect_uri='
+          return_uri = django.utils.http.urlquote('http://'+request.get_host()+reverse('admin:cmsplugin_blog_entry_publish_on_facebook', kwargs={ 'entry_id': obj.pk })+'?return_uri='+request.path)
+          url = url + return_uri
+          url = url + '&scope=publish_stream&response_type=token'
+          return redirect(url)
+        return resp
+
+    def publish_on_facebook(self, request, entry_id):
+        entry = Entry.objects.get(pk=entry_id)
+        if request.POST.get('facebook_id'):
+            from django.utils import simplejson
+            entry.facebook_published = request.POST.get('facebook_id')
+            entry.save()
+            return HttpResponse(simplejson.dumps({}), mimetype="application/json")
+        from django.conf import settings
+        from django.shortcuts import render
+        return render(request, 'admin/cmsplugin_blog/publish_on_facebook.html', { 'entry': entry, 'site_id': settings.CMS_BLOG_FACEBOOK['site_id'], 'return_uri': request.GET['return_uri'] })
+
+    def get_urls(self):
+        from django.conf.urls.defaults import *
+        urls = super(BaseEntryAdmin, self).get_urls()
+        my_urls = patterns('',
+          url(
+            r'^(?P<entry_id>\d*)/facebook$',
+            self.admin_site.admin_view(self.publish_on_facebook),
+            name='cmsplugin_blog_entry_publish_on_facebook',
+          ),
+        )
+        return my_urls + urls
 
 if 'guardian' in settings.INSTALLED_APPS: # pragma: no cover
     from guardian.admin import GuardedModelAdmin

@@ -9,7 +9,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         
         # Adding field 'Entry.facebook_published'
-        db.add_column('cmsplugin_blog_entry', 'facebook_published', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=False)
+        db.add_column('cmsplugin_blog_entry', 'facebook_published', self.gf('django.db.models.fields.TextField')(null=True, blank=True), keep_default=False)
 
 
     def backwards(self, orm):
@@ -70,7 +70,7 @@ class Migration(SchemaMigration):
         },
         'cmsplugin_blog.entry': {
             'Meta': {'ordering': "('-pub_date',)", 'object_name': 'Entry'},
-            'facebook_published': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'facebook_published': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_published': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'placeholders': ('djangocms_utils.fields.M2MPlaceholderField', [], {'to': "orm['cms.Placeholder']", 'symmetrical': 'False'}),
