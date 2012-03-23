@@ -4,11 +4,13 @@
 
 </head>
 <body>
-  Publishing...
+  Publishing to facebook...
   {% with entry.placeholders|choose_placeholder:"excerpt" as excerpt %}
   <div id='facebook_text'>
 {% render_placeholder excerpt %}
   </div>
+  {% csrf_token %}
+  {{ return_uri }}
   {% endwith %}
   <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
@@ -26,7 +28,10 @@
 
         $.post(url, { 'access_token': accessToken, 'message': $('#facebook_text').text().replace(/^\n/g, ''), 'link': 'http://beta.suursuo.fi{{ entry.get_absolute_url }}', 'from': '{{ site_id }}' }, function(data) {
           alert('Published');
-        });
+          $.post("{% url admin:cmsplugin_blog_entry_publish_on_facebook entry.pk %}", { 'facebook_id': data['id'], 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
+            window.location = '{{ return_uri }}';
+          });
+        }, 'json');
       }
     }
     var accessToken = window.location.hash.substring(1);
