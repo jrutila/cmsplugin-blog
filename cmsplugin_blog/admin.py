@@ -166,7 +166,7 @@ class BaseEntryAdmin(M2MPlaceholderAdmin):
           url = 'https://www.facebook.com/dialog/oauth?client_id='
           url = url + settings.CMS_BLOG_FACEBOOK['app_id']
           url = url + '&redirect_uri='
-          return_uri = django.utils.http.urlquote('http://'+request.get_host()+reverse('admin:cmsplugin_blog_entry_publish_on_facebook', kwargs={ 'entry_id': obj.pk })+'?return_uri='+request.path)
+          return_uri = django.utils.http.urlquote(request.build_absolute_uri(reverse('admin:cmsplugin_blog_entry_publish_on_facebook', kwargs={ 'entry_id': obj.pk }))+'?return_uri='+resp['Location'])
           url = url + return_uri
           url = url + '&scope=publish_stream&response_type=token'
           return redirect(url)
@@ -181,7 +181,9 @@ class BaseEntryAdmin(M2MPlaceholderAdmin):
             return HttpResponse(simplejson.dumps({}), mimetype="application/json")
         from django.conf import settings
         from django.shortcuts import render
-        return render(request, 'admin/cmsplugin_blog/publish_on_facebook.html', { 'entry': entry, 'site_id': settings.CMS_BLOG_FACEBOOK['site_id'], 'return_uri': request.GET['return_uri'] })
+        from django.contrib.sites.models import Site
+        entry_url = 'http://%s%s' % (Site.objects.get_current().domain, entry.get_absolute_url())
+        return render(request, 'admin/cmsplugin_blog/publish_on_facebook.html', { 'entry': entry, 'entry_full_url': entry_url, 'site_id': settings.CMS_BLOG_FACEBOOK['site_id'], 'return_uri': request.GET['return_uri'] })
 
     def get_urls(self):
         from django.conf.urls.defaults import *
