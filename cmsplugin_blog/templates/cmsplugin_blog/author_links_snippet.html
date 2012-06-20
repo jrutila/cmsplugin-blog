@@ -2,5 +2,5 @@
 
 <h1>{% trans "See entries by" %}:</h1>
   {% for author in authors %}
-    <p><a href="{% url blog_archive_author author=author %}">{{ author }}</a></p>
+    <p><a href="{% url blog_archive_author author=author %}">{{ author.first_name }} {{ author.last_name }}</a></p>
   {% endfor %}
