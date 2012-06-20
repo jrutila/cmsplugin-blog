@@ -1,0 +1,175 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-06-20 17:42+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: admin.py:133 models.py:101
+msgid "author"
+msgstr "kirjoittaja"
+
+#: admin.py:138 models.py:99
+msgid "title"
+msgstr "otsikko"
+
+#: cms_app.py:6
+msgid "Blog Apphook"
+msgstr ""
+
+#: cms_plugins.py:19 templates/cmsplugin_blog/entry_archive.html:7
+msgid "Latest entries"
+msgstr "Viimeisimmät julkaisut"
+
+#: feeds.py:35 feeds.py:46
+#, python-format
+msgid "%(site)s blog entries"
+msgstr "%(site)s julkaisut"
+
+#: feeds.py:36 feeds.py:47
+#, python-format
+msgid "%(site)s blog entries in %(lang)s"
+msgstr "%(site)s julkaisut kielellä %(lang)s"
+
+#: feeds.py:76
+#, python-format
+msgid "%(title)s tagged \"%(tag)s\""
+msgstr ""
+
+#: feeds.py:88
+#, python-format
+msgid "%(description)s tagged \"%(tag)s\""
+msgstr ""
+
+#: feeds.py:105
+#, python-format
+msgid "%(title)s by %(author)s"
+msgstr ""
+
+#: feeds.py:117
+#, python-format
+msgid "%(description)s by %(author)s"
+msgstr ""
+
+#: models.py:40
+msgid "is published"
+msgstr ""
+
+#: models.py:41
+msgid "Facebook post"
+msgstr ""
+
+#: models.py:42
+msgid "publish at"
+msgstr "julkaisuajankohta"
+
+#: models.py:87 models.py:97
+msgid "entry"
+msgstr "julkaisu"
+
+#: models.py:88
+msgid "entries"
+msgstr "julkaisut"
+
+#: models.py:98
+msgid "language"
+msgstr ""
+
+#: models.py:100
+msgid "slug"
+msgstr ""
+
+#: models.py:123
+msgid "blogentry"
+msgstr ""
+
+#: models.py:124
+msgid "blogentries"
+msgstr ""
+
+#: models.py:131
+msgid "Number of entries items to show"
+msgstr ""
+
+#: models.py:132
+msgid "Limits the number of items that will be displayed"
+msgstr ""
+
+#: models.py:134
+msgid "Only show entries for the current language"
+msgstr ""
+
+#: views.py:42
+#, python-format
+msgid ""
+"Future %(verbose_name_plural)s not available because %(class_name)s."
+"allow_future is False."
+msgstr ""
+
+#: templates/admin/cmsplugin_blog/login_to_facebook.html:20
+msgid "Allow popups."
+msgstr ""
+
+#: templates/cmsplugin_blog/author_links_snippet.html:3
+msgid "See entries by"
+msgstr "Katso julkaisut kirjoittajan mukaan"
+
+#: templates/cmsplugin_blog/entry_archive.html:13
+#: templates/cmsplugin_blog/latest_entries.html:5
+msgid "No entries"
+msgstr "Ei julkaisuja"
+
+#: templates/cmsplugin_blog/entry_archive_day.html:7
+#: templates/cmsplugin_blog/entry_archive_month.html:7
+#: templates/cmsplugin_blog/entry_archive_year.html:8
+msgid "Entries for"
+msgstr "Julkaisut ajalle"
+
+#: templates/cmsplugin_blog/entry_archive_day.html:12
+msgid "No entries for this day"
+msgstr "Tälle päivälle ei ole julkaisuja"
+
+#: templates/cmsplugin_blog/entry_archive_month.html:12
+msgid "No entries for this month"
+msgstr "Tälle kuulle ei ole julkaisuja"
+
+#: templates/cmsplugin_blog/entry_archive_year.html:13
+msgid "No entries for this year"
+msgstr "Tälle vuodelle ei ole julkaisuja"
+
+#: templates/cmsplugin_blog/entry_author_list.html:13
+msgid "Entries by"
+msgstr "Julkaisut kirjoittajan mukaan"
+
+#: templates/cmsplugin_blog/entry_author_list.html:18
+msgid "No entries by"
+msgstr "Ei julkaisuja kirjoittajalla"
+
+#: templates/cmsplugin_blog/entry_list.html:13
+msgid "Entries tagged"
+msgstr ""
+
+#: templates/cmsplugin_blog/entry_list.html:18
+msgid "No entries tagged"
+msgstr ""
+
+#: templates/cmsplugin_blog/month_links_snippet.html:3
+msgid "See entries for"
+msgstr "Katso julkaisut ajalta"
+
+#: templates/cmsplugin_blog/tag_links_snippet.html:3
+msgid "See entries tagged"
+msgstr "Katso julkaisut, joissa tägi"
