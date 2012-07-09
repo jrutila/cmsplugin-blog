@@ -168,7 +168,7 @@ class BaseEntryAdmin(M2MPlaceholderAdmin):
           url = url + '&redirect_uri='
           return_uri = django.utils.http.urlquote(request.build_absolute_uri(reverse('admin:cmsplugin_blog_entry_publish_on_facebook', kwargs={ 'entry_id': obj.pk }))+'?return_uri='+resp['Location'])
           url = url + return_uri
-          url = url + '&scope=publish_stream&response_type=token'
+          url = url + '&scope=publish_stream,manage_pages&response_type=token'
           return redirect(url)
         return resp
 
