@@ -51,6 +51,20 @@ def render_author_links(context, order_by='username'):
     })
     return context
 
+class CMSPluginStub:
+  def __init__(self, amount, tagged=None):
+    self.limit = amount
+    self.tagged = tagged
+  current_language_only = True
+  limit = 2
+  tagged = None
+
+from ..cms_plugins import CMSLatestEntriesPlugin
+@register.inclusion_tag('cmsplugin_blog/latest_entries.html', takes_context=True)
+def latest_entries(context, amount, tags=None):
+    pl = CMSLatestEntriesPlugin()
+    return pl.render(context, CMSPluginStub(amount, tags), None)
+
 @register.filter
 def choose_placeholder(placeholders, placeholder):
     try:
