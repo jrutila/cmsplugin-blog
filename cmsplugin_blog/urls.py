@@ -115,6 +115,8 @@ urlpatterns = patterns('',
     
     (r'^rss/any/$', EntriesFeed(), {'any_language': True}, 'blog_rss_any'),
     
-    (r'^rss/$', EntriesFeed(), {}, 'blog_rss')
+    (r'^rss/$', EntriesFeed(), {}, 'blog_rss'),
+
+    #(r'^facebook/(?P<entry_id>\d*)$', 'cmsplugin_blog.views.publish_on_facebook'),
     
 )
