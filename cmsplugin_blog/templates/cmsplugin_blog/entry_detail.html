@@ -11,6 +11,11 @@
 <p class="date"><span>{{ object.pub_date|date:"d F Y" }}</span></p>
 
 {% with object.placeholders|choose_placeholder:"content" as content %}
+    {% if not content.get_plugins_list %}
+      {% with object.placeholders|choose_placeholder:"excerpt" as excerpt %}
+        {% render_placeholder excerpt %}
+      {% endwith %}
+    {% endif %}
     {% render_placeholder content %}
 {% endwith %}
 
